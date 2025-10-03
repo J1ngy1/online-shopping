@@ -12,7 +12,7 @@ const queryClient = new QueryClient();
 
 function ProductDetail({ productId }) {
     const { data, isLoading, isError, error, refetch, isFetching } = myUseQuery({
-        // queryKey: ["product-detail", productId],
+        queryKey: ["product-detail", productId],
         queryFn: () => fetchProductDetail(productId),
         staleTime: 5000,
         // cacheTime: 1000 * 60,
