@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 const cache = {};
 export default function myUseQuery({ key, queryFn, staleTime = 5000 }) {
-  const [data, setData] = useState(cache[key]?.data || null);
+  const normalizedKey = Array.isArray(key) ? key.join("_") : key;
+  const [data, setData] = useState(cache[normalizedKey]?.data || null);
   const [error, setError] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isError, setIsError] = useState(false);
@@ -11,7 +12,7 @@ export default function myUseQuery({ key, queryFn, staleTime = 5000 }) {
 
     try {
       const result = await queryFn();
-      cache[key] = { data: result, timeStamp: Date.now() };
+      cache[normalizedKey] = { data: result, timeStamp: Date.now() };
       setData(result);
       setError(null);
       setIsError(false);
@@ -25,7 +26,7 @@ export default function myUseQuery({ key, queryFn, staleTime = 5000 }) {
 
   useEffect(() => {
     let isMounted = true;
-    const entry = cache[key];
+    const entry = cache[normalizedKey];
     const now = Date.now();
 
     const run = async () => {
